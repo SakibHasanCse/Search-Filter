@@ -14,7 +14,6 @@ const Home = () => {
                 setIsLoaded(true);
                 setItems(result)
 
-
             }, (error) => {
                 console.log(error)
                 setError(error)
@@ -24,6 +23,21 @@ const Home = () => {
 
     }, [])
 
+    function searchs(items) {
+        return items.filter(item => {
+            return searchParams.some(newItem => {
+                return (
+                    
+                    item[newItem]
+                        .toString()
+                        .toLowerCase()
+                        .indexOf(search.toLowerCase()) > -1
+                )
+
+            })
+        })
+    }
+    
     const isError = () => error && (<div>Error: {error}</div>)
     const isLoading = () => !isLoaded && (<div>Loading...</div>);
     const searchFilter = () => {
@@ -45,7 +59,7 @@ const Home = () => {
         )
     }
     const allItems = () => (
-        items && items.map((item, i) => (
+        items && searchs(items).map((item, i) => (
 
             <li>
 
@@ -72,16 +86,12 @@ const Home = () => {
         <div>
             {isError()}
             {isLoading()}
-
             <div className="wrapper">
+                {searchFilter()}
                 <ul className="card-grid">
                 {allItems()}
                 </ul>
             </div>
-        
-           
-
-         
         </div>
     );
 }
