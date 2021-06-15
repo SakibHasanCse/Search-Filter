@@ -5,7 +5,8 @@ const Home = () => {
     const [isLoaded, setIsLoaded] = useState(false);
     const [items, setItems] = useState([]);
     const [search, setSearch] = useState('');
-    const [searchParams] = useState(["capital", "name"])
+    const [searchParams] = useState(["capital", "name"]);
+    const [filterParams ,setFilterParams] = useState(['All'])
 
     useEffect(() => {
          fetch("https://restcountries.eu/rest/v2/all")
@@ -23,6 +24,8 @@ const Home = () => {
 
     }, [])
 
+
+    // This function takes in our fetched items and returns all the items that match anything in our searchParam array if the indexOF() is > -1.
     function searchs(items) {
         return items.filter(item => {
             return searchParams.some(newItem => {
@@ -56,6 +59,13 @@ const Home = () => {
                      <span className="sr-only">Search countries here</span>
                 </label>
             </div>
+        )
+    }
+    const rigionFilter = () => {
+        return (
+            <select name="" id="">
+                <option value="">Amirica</option>
+            </select>
         )
     }
     const allItems = () => (
