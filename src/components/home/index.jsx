@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-
+import '../../index.css';
 const Home = () => {
-    const [error, setError] = useState(true);
+    const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [items, setItems] = useState([]);
     const [search, setSearch] = useState('');
     const [searchParams] = useState(["capital", "name"]);
-    const [filterParams ,setFilterParams] = useState(['All'])
+    const [filterParam ,setFilterParam] = useState(['All'])
 
     useEffect(() => {
          fetch("https://restcountries.eu/rest/v2/all")
@@ -28,16 +28,25 @@ const Home = () => {
     // This function takes in our fetched items and returns all the items that match anything in our searchParam array if the indexOF() is > -1.
     function searchs(items) {
         return items.filter(item => {
-            return searchParams.some(newItem => {
-                return (
+            if (item.region == filterParam) {
+                return searchParams.some(newItem => {
+                    return (
                     
-                    item[newItem]
-                        .toString()
-                        .toLowerCase()
-                        .indexOf(search.toLowerCase()) > -1
-                )
+                        item[newItem]
+                            .toString()
+                            .toLowerCase()
+                            .indexOf(search.toLowerCase()) > -1
+                    )
 
-            })
+                })
+            } else if (filterParam == 'All') {
+                return searchParams.some(newItem => {
+                    return (
+                        item[newItem]
+                        .toString().toLowerCase().indexOf(search.toLowerCase()) > -1
+                   )
+                })
+            }
         })
     }
     
@@ -45,29 +54,42 @@ const Home = () => {
     const isLoading = () => !isLoaded && (<div>Loading...</div>);
     const searchFilter = () => {
         return (
-            <div className="search-wrapper">
-                <label htmlFor="search-form">
-                    <input
-                        type="search"
-                        id="search-form"
-                        placeholder="Search for..."
-                        value={search}
-                        className="search-input"
-                        onChange={(e)=> setSearch(e.target.value)}
+            <>
+            <div className="select"> 
                     
-                    />
-                     <span className="sr-only">Search countries here</span>
-                </label>
-            </div>
+                <select
+                     onChange={(e) => {
+                    setFilterParam(e.target.value);
+                    }}
+                    className="custom-select"
+                    aria-label="Filter Countries By Region">
+                        <option value="All">Filter By Region</option>
+                        <option value="Africa">Africa</option>
+                        <option value="Americas">America</option>
+                        <option value="Asia">Asia</option>
+                        <option value="Europe">Europe</option>
+                        <option value="Oceania">Oceania</option>
+                        </select>
+                    <span className="focus"></span>
+                </div>
+                    <div className="search-wrapper">
+                        <label htmlFor="search-form">
+                            <input
+                                type="search"
+                                id="search-form"
+                                placeholder="Search for..."
+                                value={search}
+                                className="search-input"
+                                onChange={(e)=> setSearch(e.target.value)}
+                            
+                            />
+                            <span className="sr-only">Search countries here</span>
+                        </label>
+                        </div>
+                </>
         )
     }
-    const rigionFilter = () => {
-        return (
-            <select name="" id="">
-                <option value="">Amirica</option>
-            </select>
-        )
-    }
+ 
     const allItems = () => (
         items && searchs(items).map((item, i) => (
 
@@ -93,15 +115,23 @@ const Home = () => {
         ))
     )
     return (
-        <div>
+        <div className="container">
+            <div className="row">
+            <div className="wrapper">
             {isError()}
             {isLoading()}
-            <div className="wrapper">
-                {searchFilter()}
+               
+                        {searchFilter()}
+                
+   
+                      
                 <ul className="card-grid">
                 {allItems()}
                 </ul>
+               </div>
+
             </div>
+            
         </div>
     );
 }
